@@ -8,11 +8,12 @@ CREATE TABLE groups(
 
 
 /* to create a group
-form data: group_name */
+form data: group_name, userid*/
 
 module.exports.createGroup = async function(req, res){
   try {
       var group = await db`INSERT INTO groups(name) VALUES(${req.body.group_name}) RETURNING *`;
+      await db`INSERT INTO groupMembers(userid, groupid) VALUES(${req.body.userid}, ${group[0].groupid})`;
       console.log("NEW GROUP CREATED:", group);
       return res.json(201, {
           message: "Successfully created new group",
@@ -35,7 +36,7 @@ module.exports.deleteGroup = async function(req, res){
     console.log("check");
     console.log("GROUPID:", req.params.groupid);
       var group = await db`DELETE FROM groups WHERE groupid=${req.params.groupid} RETURNING *`;
-      console.log("GROUP DELETED:", group);
+      console.log("GROUP DELETED");
       return res.json(201, {
           message: "Successfully deleted group",
           data:{
