@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const groupsController = require('../../controllers/api/groups_controller');
+const groupsController = require("../../controllers/api/groups_controller");
 
-router.post('/create-group', groupsController.createGroup);
-router.delete('/delete-group/:id', groupsController.deleteGroup);
-router.get('/edit-group/:id', groupsController.editGroup);
+router.post("/create-group", groupsController.createGroup);
+router.delete("/delete-group/:groupid", groupsController.deleteGroup);
+router.post("/edit-group/:groupid", groupsController.editGroup);
 
 module.exports = router;
