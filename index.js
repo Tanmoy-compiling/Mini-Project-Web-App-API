@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //any request will go to the routes
 app.use('/', require('./routes'));
 
-//express app listening on port
+//express app listening on port 8000
 app.listen(port, (err)=>{
     if(err) console.log("Error in running server: ", err);
     console.log("Server running on port: ", port);
