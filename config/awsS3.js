@@ -26,6 +26,7 @@ async function uploadFileToS3(file, bucketName, keyPrefix) {
     Bucket: bucketName,
     Key: key,
     Body: file.buffer,
+    ACL: 'public-read',
   });
   await s3Client.send(command);
   return `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
