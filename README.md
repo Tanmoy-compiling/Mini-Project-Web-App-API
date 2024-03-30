@@ -1,1 +1,2 @@
-# Mini-Project-Web-App-API
+Mini Project Whatsapp Chatbot
+API Details:
