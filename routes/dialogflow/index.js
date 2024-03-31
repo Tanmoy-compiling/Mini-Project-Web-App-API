@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const dialogflow = require('../../config/dialogflow');
+const dialogflow = require('../../controllers/chatbot/dialogflow_controller');
 
-router.get('/', dialogflow.runsample);
+router.post('/process-query', dialogflow.processQuery);
 
 
-module.exports = router;
+module.exports = router; 
