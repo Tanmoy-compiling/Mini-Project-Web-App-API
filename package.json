@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.535.0",
+    "@aws-sdk/client-s3": "^3.540.0",
     "aws-sdk": "^2.1579.0",
     "body-parser": "^1.20.2",
     "dialogflow": "^1.2.0",
@@ -22,7 +22,8 @@
     "multer-s3": "^3.0.1",
     "nodemon": "^3.0.3",
     "pg": "^8.11.3",
-    "postgres": "^3.4.3",
+    "postgres": "^3.4.4",
+    "twilio": "^5.0.1",
     "uuid": "^9.0.1"
   }
 }
