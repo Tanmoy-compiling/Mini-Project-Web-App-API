@@ -1,4 +1,4 @@
-const {sessionId, sessionClient, sessionPath} = require('../../config/dialogflow');
+const {sessionId, sessionClient, sessionPath} = require('../../services/dialogflow');
 
 
 module.exports.processQuery = async function(req, res){
