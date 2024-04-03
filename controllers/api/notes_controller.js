@@ -63,21 +63,14 @@ module.exports.deleteNote = async function (req, res) {
 };
 
 //fetch all notes where groupid = groupid and title like %title%
-module.exports.fetchNotes = async function (req, res) {
+module.exports.fetchNotes = async function (title, userid) {
   try {
+    console.log(title, userid);
     var notes =
-      await db`SELECT * FROM notes WHERE groupid=${req.body.groupid} AND title LIKE ${req.body.title}`;
+      await db`SELECT n.content FROM notes AS n INNER JOIN groupmembers AS g ON n.groupid = g.groupid WHERE g.userid=${userid} AND n.title LIKE '%' || ${title} || '%'`;
     console.log("FETCHED NOTES:", notes);
-    return res.json(200, {
-      message: "Successfully fetched notes",
-      data: {
-        notes: notes,
-      },
-    });
+    return notes;
   } catch (err) {
     console.log("*****************ERROR in fetching notes:", err);
-    return res.json(500, {
-      message: "Error in fetching notes",
-    });
   }
 };

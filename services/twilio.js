@@ -2,11 +2,12 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 const dialogflow = require("./dialogflow");
+const notesController = require("../controllers/api/notes_controller");
 
 module.exports.sendSMS = async function (text, to) {
   try {
     const message = await client.messages.create({
-      body: text,
+      mediaUrl: text,
       from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
       to: to, //CLIENT'S PHONE NUMBER
     });
@@ -23,8 +24,19 @@ module.exports.recvMessage = async function (req, res) {
   try {
     const incomingMsg = req.body.Body;
     const from = req.body.From;
-    const result = await dialogflow.processQuery(incomingMsg);
-    const sendResult = await module.exports.sendSMS(result, from);
+    const title = await dialogflow.processQuery(incomingMsg);
+    const number = from.slice(12, 12+10)
+    //fetch link from database
+    const notes = await notesController.fetchNotes(title, number);
+    var sendResult;
+    if(!notes || notes.length === 0){
+      var err = "Looks like you dont have any notes with that title. Please try again. ;(";
+      console.log("**********ERROR: ", err);
+      sendResult = await module.exports.sendSMS(err, from);
+    }
+    else{
+      sendResult = await module.exports.sendSMS(notes[0].content, from);
+    }
     if (sendResult.success) {
       res
         .status(200)
