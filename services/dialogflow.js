@@ -32,8 +32,8 @@ module.exports.processQuery = async function (text) {
 
     // Send request and log result
     const responses = await sessionClient.detectIntent(request);
-    const result = responses[0].queryResult.fulfillmentText;
-    return result;
+    // const result = responses[0].queryResult.fulfillmentText;
+    return responses[0];
   } catch (err) {
     console.log("Error in fetching response: ", err);
     throw err; // Throw the error so the caller can handle it

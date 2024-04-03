@@ -31,7 +31,6 @@ module.exports.insertNote = async function (req, res) {
 
     var note =
       await db`INSERT INTO notes(title, content, groupid) VALUES(${req.body.title}, ${content}, ${req.query.groupid}) RETURNING *`;
-    console.log("NEW NOTE CREATED:", note);
     return res.json(201, {
       message: "Successfully created new note",
       data: { note: note[0] },
