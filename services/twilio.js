@@ -55,7 +55,7 @@ module.exports.recvMessage = async function (req, res) {
         sendResult = await module.exports.sendSMS(err, from);
       }
       else{
-        for(let i=0; i<notes.length(); i++){
+        for(let i=0; i<notes.length; i++){
           sendResult = await module.exports.sendMedia(notes[i].content, from);
         }
       }
