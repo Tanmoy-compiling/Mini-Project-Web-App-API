@@ -9,7 +9,8 @@ const credentialsPath = process.env.DIALOGFLOW_CREDENTIALS_PATH;
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
 
-module.exports.processQuery = async function (req, res) {
+// Updated to accept a text parameter for processing
+module.exports.processQuery = async function (text) {
   try {
     // A unique identifier for the given session
     const sessionId = uuid.v4();
@@ -18,23 +19,23 @@ module.exports.processQuery = async function (req, res) {
     const sessionClient = new dialogflow.SessionsClient();
     const sessionPath = sessionClient.sessionPath(projectId, sessionId);
 
-    // The text query request.
+    // The text query request with the passed text parameter
     const request = {
       session: sessionPath,
       queryInput: {
         text: {
-          // The query to send to the dialogflow agent
-          text: req.body.Body,
-          // The language used by the client (en-US)
+          text: text, // Use the passed text parameter
           languageCode: "en-US",
         },
       },
     };
+
     // Send request and log result
     const responses = await sessionClient.detectIntent(request);
     const result = responses[0].queryResult.fulfillmentText;
     return result;
   } catch (err) {
-    console.log("******************ERROR in fetching response: ", err);
+    console.log("Error in fetching response: ", err);
+    throw err; // Throw the error so the caller can handle it
   }
 };
