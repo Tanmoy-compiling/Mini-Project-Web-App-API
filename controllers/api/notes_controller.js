@@ -1,4 +1,5 @@
 const db = require("../../config/postgres");
+const twilio = require("../../services/twilio");
 
 /*
 CREATE TABLE IF NOT EXISTS notes (
@@ -17,7 +18,7 @@ CREATE TABLE groups(
 */
 
 /* to insert a note
-form data: title, 
+form data: title, file
 query: groupid  */
 
 module.exports.insertNote = async function (req, res) {
@@ -30,8 +31,14 @@ module.exports.insertNote = async function (req, res) {
 
     const content = req.fileUrl ? req.fileUrl : req.body.content; // Use the file URL if available
 
-    var note =
-      await db`INSERT INTO notes(title, content, groupid) VALUES(${req.body.title}, ${content}, ${req.query.groupid}) RETURNING *`;
+    var note = await db`INSERT INTO notes(title, content, groupid) VALUES(${req.body.title}, ${content}, ${req.query.groupid}) RETURNING *`;
+    var group = await db`SELECT * FROM groups WHERE groupid=${req.query.groupid}`;
+    var users = await db`SELECT userid FROM groupmembers where groupid=${req.query.groupid}`;
+    var text = `Greetings user! New notes on topic: ${note[0].title} have been uploaded to your group: ${group[0].name}`;
+    users.forEach(async u => {
+      await twilio.sendBoth(text, note[0].content, "whatsapp:+91"+u.userid);
+    });
+
     return res.json(201, {
       message: "Successfully created new note",
       data: { note: note[0] },

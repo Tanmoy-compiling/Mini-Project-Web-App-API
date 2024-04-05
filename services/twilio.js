@@ -18,7 +18,6 @@ module.exports.sendSMS = async function (text, to) {
     return { success: true, message: "SMS sent successfully", data: message };
   } catch (err) {
     console.log("Error in sending SMS: ", err);
-    throw new Error("Error in sending SMS"); // Throw the error to be caught by the caller
   }
 };
 
@@ -34,6 +33,21 @@ module.exports.sendMedia = async function (url, to) {
   } catch (err) {
     console.log("Error in sending SMS: ", err);
     throw new Error("Error in sending SMS"); // Throw the error to be caught by the caller
+  }
+};
+
+module.exports.sendBoth = async function (text, url, to) {
+  try {
+    const message = await client.messages.create({
+      body: text,
+      mediaUrl: url,
+      from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
+      to: to, //CLIENT'S PHONE NUMBER
+    });
+    console.log("SMS sent successfully: ", text);
+    return { success: true, message: "SMS sent successfully", data: message };
+  } catch (err) {
+    console.log("Error in sending SMS: ", err);
   }
 };
 
