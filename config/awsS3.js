@@ -22,8 +22,8 @@ verifyS3Connection();
 
 async function uploadFileToS3(file, bucketName, keyPrefix) {
   const key = `${keyPrefix}/${Date.now()}_${file.originalname}`;
-  const command = new PutObjectCommand({
-    Bucket: bucketName,
+  const command = new PutObjectCommand
+    Bucket: bucketName,({
     Key: key,
     Body: file.buffer,
     ACL: 'public-read',
