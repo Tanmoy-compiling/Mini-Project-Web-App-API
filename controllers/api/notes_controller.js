@@ -17,7 +17,8 @@ CREATE TABLE groups(
 */
 
 /* to insert a note
-form data: title, content */
+form data: title, 
+query: groupid  */
 
 module.exports.insertNote = async function (req, res) {
   try {
@@ -64,7 +65,6 @@ module.exports.deleteNote = async function (req, res) {
 //fetch all notes where groupid = groupid and title like %title%
 module.exports.fetchNotes = async function (title, userid) {
   try {
-    console.log(title, userid);
     var notes =
       await db`SELECT n.content FROM notes AS n INNER JOIN groupmembers AS g ON n.groupid = g.groupid WHERE g.userid=${userid} AND n.title LIKE '%' || ${title} || '%'`;
     console.log("FETCHED NOTES:", notes);

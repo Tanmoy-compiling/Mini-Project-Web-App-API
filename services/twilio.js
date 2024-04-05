@@ -45,7 +45,8 @@ module.exports.recvMessage = async function (req, res) {
     const number = from.slice(12, 12+10)
     var sendResult;
     const title = result.queryResult.fulfillmentText;
-    if(result.queryResult.intent.displayName == "Default Fallback Intent" || result.queryResult.intent.displayName == "Default Welcome Intent"){
+    const intent = result.queryResult.intent.displayName;
+    if(intent === "Default Fallback Intent" || intent == "Default Welcome Intent" || intent == "instructions"){
       sendResult = await module.exports.sendSMS(title, from);
     }
     else{
