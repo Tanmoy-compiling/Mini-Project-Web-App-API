@@ -70,3 +70,17 @@ module.exports.editGroup = async function(req, res){
       })
   }
 }
+
+/*
+return groups of a user 
+given: userid in arguments
+*/
+module.exports.fetchGroups = async function (userid) {
+    try{
+        var groups = await db`SELECT g.name FROM groups AS g INNER JOIN groupmembers AS m ON g.groupid=m.groupid WHERE m.userid=${userid}`;
+        if(!groups) throw new Error("Error in fetching user groups");
+        return groups;
+    }catch(err){
+        console.log("****************Error:", err);
+    }
+}

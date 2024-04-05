@@ -5,6 +5,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 const dialogflow = require("./dialogflow");
 const notesController = require("../controllers/api/notes_controller");
+const groupsController = require("../controllers/api/groups_controller");
 
 module.exports.sendSMS = async function (text, to) {
   try {
@@ -13,7 +14,7 @@ module.exports.sendSMS = async function (text, to) {
       from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
       to: to, //CLIENT'S PHONE NUMBER
     });
-    console.log("SMS sent successfully: ", message.sid);
+    console.log("SMS sent successfully: ", text);
     return { success: true, message: "SMS sent successfully", data: message };
   } catch (err) {
     console.log("Error in sending SMS: ", err);
@@ -28,7 +29,7 @@ module.exports.sendMedia = async function (url, to) {
       from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
       to: to, //CLIENT'S PHONE NUMBER
     });
-    console.log("Media sent successfully: ", message.sid);
+    console.log("Media sent successfully: ", url);
     return { success: true, message: "Media sent successfully", data: message };
   } catch (err) {
     console.log("Error in sending SMS: ", err);
@@ -41,14 +42,31 @@ module.exports.recvMessage = async function (req, res) {
   try {
     const incomingMsg = req.body.Body;
     const from = req.body.From;
-    const result = await dialogflow.processQuery(incomingMsg);
     const number = from.slice(12, 12+10)
     var sendResult;
-    const title = result.queryResult.fulfillmentText;
+    
+    //fetch result from dialogflow
+    const result = await dialogflow.processQuery(incomingMsg);
+    var title = result.queryResult.fulfillmentText;
     const intent = result.queryResult.intent.displayName;
-    if(intent === "Default Fallback Intent" || intent == "Default Welcome Intent" || intent == "instructions"){
+
+    //if default case
+    if(intent === "Default Fallback Intent" || intent === "Default Welcome Intent" || intent === "instructions"){
       sendResult = await module.exports.sendSMS(title, from);
     }
+    //if asking for groups info
+    else if(intent == "groups"){
+      //fetch groups the user is part of 
+      var groups = await groupsController.fetchGroups(number);
+      groups.forEach(grp => {
+        title = title +`\n`+ grp.name;
+      });
+      if(!groups || groups.length === 0){
+        title = "Looks like you're not a part of any group ;(";
+      }
+      sendResult = await module.exports.sendSMS(title, from);
+    }
+    //else asking for notes
     else{
       //fetch link from database
       const notes = await notesController.fetchNotes(title, number);
@@ -63,6 +81,7 @@ module.exports.recvMessage = async function (req, res) {
         }
       }
     }
+
     if (sendResult.success) {
       res
         .status(200)
