@@ -11,3 +11,5 @@ Dialogflow: It is a natural language understanding platform developed by Google.
 Twilio: It is a cloud communications platform that allows us to send and receive WhatsApp messages through its API
 
 AWS S3: Using Amazon S3 to store class notes provides a scalable, secure, and durable solution for managing and accessing your documents. You can upload notes as files to S3 buckets, organize them with folders, and control access with permissions. S3 ensures your notes are always available and protected against data loss.
+
+AWS Elastic Beanstalk: it is a platform-as-a-service (PaaS) that simplifies application deployment and management. It supports various programming languages and automatically handles infrastructure tasks like provisioning, load balancing, scaling, and monitoring, allowing developers to focus on writing code.
